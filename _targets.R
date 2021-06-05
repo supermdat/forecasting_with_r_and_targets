@@ -8,7 +8,7 @@ source("SRC/Functions/04_feat_engineer.R")
 source("SRC/Functions/05_create_data_splits_and_cv.R")
 source("SRC/Functions/06_create_recipe.R")
 source("SRC/Functions/07_create_model_specs_workflows.R")
-# source("SRC/Functions/08_tune_models.R")
+source("SRC/Functions/08_tune_models.R")
 # source("SRC/Functions/09_select_best_model_and_retrain.R")
 # source("SRC/Functions/10_predict.R")
 # source("SRC/Functions/11_predict_actual_plot.R")
@@ -58,8 +58,9 @@ list(
   ),
   tar_target(
     name = split_cv,
-    command = create_data_splits_and_cv(data = f_engnr, assess_period = "7 days", cumulative_cv = TRUE,
-                                        seed = 123456789, skip_period_tscv = 4, cumulative_tscv = FALSE
+    command = create_data_splits_and_cv(data = f_engnr, assess_period = "7 days", 
+                                        cumulative_cv = TRUE, seed = 123456789, 
+                                        skip_period_tscv = 4, cumulative_tscv = FALSE
                                         )
   ),
   tar_target(
@@ -69,14 +70,19 @@ list(
   tar_target(
     name = specs_workflow,
     command = create_model_specs_workflows(recipe = recipe)
+  ),
+  tar_target(
+    name = tune,
+    command = tune_models(wflow = specs_workflow, seed = 123456789, 
+                          rs = split_cv$folds, grid_num = 4
+                          )
   )#,
   # tar_target(
-  #   name = tune,
-  #   command = tune_models(wflow = specs_workflow, seed = 123456789, grid_num = 4, rs = split_cv$folds)
-  # ),
-  # tar_target(
   #   name = select_best_retrain,
-  #   command = select_best_model_and_retrain(tuned_mod = tune, metric = "rmse", wflow = specs_workflow, splits = split_cv$split)
+  #   command = select_best_model_and_retrain(tuned_mod = tune, metric = "rmse", 
+  #                                           wflow = specs_workflow, 
+  #                                           splits = split_cv$split
+  #                                           )
   # ),
   # tar_target(
   #   name = f_predict,

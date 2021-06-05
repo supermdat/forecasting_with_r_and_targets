@@ -18,7 +18,8 @@ View(targets::tar_meta(fields = warnings))
 targets::tar_watch(seconds = 10, outdated = FALSE, targets_only = TRUE)
 
 
-
+(targets::tar_read(select_best_retrain))$.metrics
+View(targets::tar_read(f_predict))
 targets::tar_read(plot_pred_actual)
 
 

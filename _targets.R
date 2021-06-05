@@ -9,9 +9,9 @@ source("SRC/Functions/05_create_data_splits_and_cv.R")
 source("SRC/Functions/06_create_recipe.R")
 source("SRC/Functions/07_create_model_specs_workflows.R")
 source("SRC/Functions/08_tune_models.R")
-# source("SRC/Functions/09_select_best_model_and_retrain.R")
-# source("SRC/Functions/10_predict.R")
-# source("SRC/Functions/11_predict_actual_plot.R")
+source("SRC/Functions/09_select_best_model_and_retrain.R")
+source("SRC/Functions/10_predict.R")
+source("SRC/Functions/11_predict_actual_plot.R")
 
 # options(tidyverse.quiet = TRUE)
 
@@ -76,22 +76,22 @@ list(
     command = tune_models(wflow = specs_workflow, seed = 123456789, 
                           rs = split_cv$folds, grid_num = 4
                           )
-  )#,
-  # tar_target(
-  #   name = select_best_retrain,
-  #   command = select_best_model_and_retrain(tuned_mod = tune, metric = "rmse", 
-  #                                           wflow = specs_workflow, 
-  #                                           splits = split_cv$split
-  #                                           )
-  # ),
-  # tar_target(
-  #   name = f_predict,
-  #   command = func_predict(final_mod = select_best_retrain)
-  # ),
-  # tar_target(
-  #   name = plot_pred_actual,
-  #   command = predict_actual_plot(data = f_predict)
-  # )
+  ),
+  tar_target(
+    name = select_best_retrain,
+    command = select_best_model_and_retrain(tuned_mod = tune, metric = "rmse",
+                                            wflow = specs_workflow,
+                                            splits = split_cv$split
+                                            )
+  ),
+  tar_target(
+    name = f_predict,
+    command = func_predict(final_mod = select_best_retrain)
+  ),
+  tar_target(
+    name = plot_pred_actual,
+    command = predict_actual_plot(data = f_predict)
+  )
 )
 
 
